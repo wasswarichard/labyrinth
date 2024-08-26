@@ -2,6 +2,7 @@ export function findShortestPath(labyrinth: string[][]): number {
     const rows: number = labyrinth.length;
     const columns: number = labyrinth[0].length;
     const blocked_path: string = '1'; // wall
+    const startIndex: number = 0;
 
     const directions: number[][] = [
         [0, 1], // right
@@ -32,6 +33,50 @@ export function findShortestPath(labyrinth: string[][]): number {
 
     if (startRow === -1 || startCol === -1) return -1;
 
+    /**
+     * A queue to store the visited position and the distance
+     * An array with false boolean values and same dimensions as the argument to keep track of visited positions
+     */
+    const queue: [number, number, number][] = [];
+    const visitedPositions: boolean[][] = Array.from({ length: rows }, () =>
+        Array(columns).fill(false)
+    );
+    queue.push([startRow, startCol, 0]);
+    visitedPositions[startRow][startCol] = true;
+
+    while (queue.length > 0) {
+        const [currentRow, currentCol, distance] = queue.shift()!;
+
+        /**
+         * check if we reached the exit (E) then return the distance
+         */
+        if (labyrinth[currentRow][currentCol] === labyrinth[endRow][endCol]) return distance;
+
+        /**
+         * Explore other neighbours
+         */
+        for (const [dx, dy] of directions) {
+            const newRow = currentRow + dx;
+            const newCol = currentCol + dy;
+
+            /**
+             * boundary check for index to make sure checking is within the boundaries of the array to avoid errors and undefined.
+             * avoid obstacles / walls where position is 1
+             * position should not be visited
+             */
+            if (
+                newRow >= startIndex &&
+                newRow < rows &&
+                newCol >= startIndex &&
+                newCol < columns &&
+                labyrinth[newRow][newCol] !== blocked_path &&
+                !visitedPositions[newRow][newCol]
+            ) {
+                queue.push([newRow, newCol, distance + 1]);
+                visitedPositions[newRow][newCol] = true;
+            }
+        }
+    }
 
     return -1;
 }
