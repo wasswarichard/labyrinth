@@ -35,14 +35,9 @@ export function findShortestPath(labyrinth: string[][]): number {
 
     /**
      * A queue to store the visited position and the distance
-     * An array with false boolean values and same dimensions as the argument to keep track of visited positions
      */
     const queue: [number, number, number][] = [];
-    const visitedPositions: boolean[][] = Array.from({ length: rows }, () =>
-        Array(columns).fill(false)
-    );
     queue.push([startRow, startCol, 0]);
-    visitedPositions[startRow][startCol] = true;
 
     while (queue.length > 0) {
         const [currentRow, currentCol, distance] = queue.shift()!;
@@ -62,18 +57,15 @@ export function findShortestPath(labyrinth: string[][]): number {
             /**
              * boundary check for index to make sure checking is within the boundaries of the array to avoid errors and undefined.
              * avoid obstacles / walls where position is 1
-             * position should not be visited
              */
             if (
                 newRow >= startIndex &&
                 newRow < rows &&
                 newCol >= startIndex &&
                 newCol < columns &&
-                labyrinth[newRow][newCol] !== blocked_path &&
-                !visitedPositions[newRow][newCol]
+                labyrinth[newRow][newCol] !== blocked_path
             ) {
                 queue.push([newRow, newCol, distance + 1]);
-                visitedPositions[newRow][newCol] = true;
             }
         }
     }
