@@ -31,7 +31,7 @@ export function findShortestPath(labyrinth: string[][]): number {
         }
     }
 
-    if (startRow === -1 || startCol === -1) return -1;
+    if (startRow === -1 || startCol === -1 || endRow === -1 || endCol === -1) return -1;
 
     /**
      * A queue to store the visited position and the distance
